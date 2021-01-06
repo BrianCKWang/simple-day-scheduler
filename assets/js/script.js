@@ -9,15 +9,15 @@ var createTask = function(taskTime, taskText) {
   .addClass("row");
 
   var taskTimeEl = $("<div>")
-  .addClass("time-block col-1")
+  .addClass("time-block col-2 col-lg-1")
   .text(taskTime);
 
   var taskTextEl = $("<p>")
-  .addClass("description col")
+  .addClass("description col-8 col-lg-10")
   .text(taskText);
 
   var taskSaveBtnEl = $("<button>")
-  .addClass("saveBtn col-1")
+  .addClass("saveBtn col-2  col-lg-1")
   .attr('type', 'button');
 
   var taskSaveBtnIconEl = $("<span>")
@@ -26,9 +26,6 @@ var createTask = function(taskTime, taskText) {
   taskSaveBtnEl.append(taskSaveBtnIconEl);
   // append span and p element to parent li
   taskDivRowEl.append(taskTimeEl, taskTextEl, taskSaveBtnEl);
-
-  // check due date
-  auditTask(taskDivRowEl);
 
   // append to ul list on the page
   $("#schedule").append(taskDivRowEl);
@@ -54,26 +51,32 @@ var saveTasks = function() {
   
 var auditTask = function(taskEl) {
   // get date from task element
-  var date = $(taskEl)
-  .find("span")
+  var taskTime = $(taskEl)
+  .find(".time-block")
   .text()
   .trim();
 
-  // convert to moment object at 5:00pm, L for local time
-  var time = moment(date, "L").set("hour", 17);
-  
-  // remove any old classes from element
-  $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
+  var taskTimeNum = parseInt(taskTime.replace( /^\D+/g, ''));
 
-  // apply new class if task is near/over due date
-  if (moment().isAfter(time)) {
-    $(taskEl).addClass("list-group-item-danger");
-  } 
-  else if (Math.abs(moment().diff(time, "days")) <= 2) {
-    $(taskEl).addClass("list-group-item-warning");
+  if(taskTimeNum < 12 && taskTime.includes("pm")){
+    taskTimeNum += 12;
   }
 
-  // console.log(taskEl);
+  // convert to moment object at 5:00pm, L for local time
+  var currentHour = parseInt(moment().format("k"));
+
+  $(taskEl).removeClass("past present future");
+
+  if(taskTimeNum < currentHour){
+    $(taskEl).find(".description").addClass("past");
+  }
+  else if(taskTimeNum > currentHour){
+    $(taskEl).find(".description").addClass("future");
+  }
+  else{
+    $(taskEl).find(".description").addClass("present");
+  }
+
 };
 
 var initializeTask = function() {
@@ -91,7 +94,7 @@ var initializeTask = function() {
 }
 
 var displayCurrentDate = function() {
-  $("#currentDay").text(moment().format('dddd, MMMM Do YYYY'));
+  $("#currentDay").text(moment().format('dddd, MMMM Do YYYY, h:mm a'));
 }
 
 $("#schedule").on("click", "p", function() {
@@ -120,6 +123,8 @@ $("#schedule").on("blur", "textarea", function(){
 
   // replace textarea with p element
   $(this).replaceWith(taskP);
+
+  auditALlTasks();
 });
 
 $(document).ready(function(){
@@ -133,6 +138,19 @@ $(document).ready(function(){
   });
 });
 
+var auditALlTasks = function() {
+  $(".row").each(function(index, el) {
+    // console.log("el: " + el);
+    auditTask(el);
+  });
+}
+
+setInterval(function () {
+  auditALlTasks();
+},  (1000 * 60) * 1);
+
 // localStorage.removeItem(localStorageName);
-loadTasks();
 displayCurrentDate();
+loadTasks();
+auditALlTasks();
+
