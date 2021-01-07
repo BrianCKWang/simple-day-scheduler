@@ -67,12 +67,8 @@ var auditTask = function(taskEl) {
   // convert to moment object at 5:00pm, L for local time
   var currentHour = parseInt(moment().format("k"));
 
-  
-  /******************************************************************************************************/
-  currentHour-= 9;
-  /******************************************************************************************************/
 
-  $(taskEl).removeClass("past present future");
+  $(taskEl).find(".description").removeClass("past present future");
 
   if(taskTimeNum < currentHour){
     $(taskEl).find(".description").addClass("past");
