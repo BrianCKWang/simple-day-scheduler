@@ -56,14 +56,21 @@ var auditTask = function(taskEl) {
   .text()
   .trim();
 
+  // clear the alphabet from string
   var taskTimeNum = parseInt(taskTime.replace( /^\D+/g, ''));
 
+  // correct the time number
   if(taskTimeNum < 12 && taskTime.includes("pm")){
     taskTimeNum += 12;
   }
 
   // convert to moment object at 5:00pm, L for local time
   var currentHour = parseInt(moment().format("k"));
+
+  
+  /******************************************************************************************************/
+  currentHour-= 9;
+  /******************************************************************************************************/
 
   $(taskEl).removeClass("past present future");
 
@@ -89,22 +96,44 @@ var initializeTask = function() {
   }
 
   saveTasks();
-
-  var time = moment().format('kk');
 }
 
 var displayCurrentDate = function() {
   $("#currentDay").text(moment().format('dddd, MMMM Do YYYY, h:mm a'));
 }
 
+// get the remaining millisecond and set a timeout to start the setInterval for more accurate timing
+var minuteUpdate = function() {
+  var d = new Date();
+  setTimeout(function(){
+    setInterval(function () {
+      displayCurrentDate();
+    },  (1000 * 60) * 1);
+    }, d.getUTCMilliseconds());
+}
+
+var taskAuditUpdate = function() {
+  var d = new Date();
+  setTimeout(function(){
+    setInterval(function () {
+      auditALlTasks();
+    },  (1000 * 60) * 60);
+    }, d.getUTCMilliseconds());
+}
+
 $("#schedule").on("click", "p", function() {
   // console.log("<p> was clicked");
-  var text = $(this)
+  var originalText = $(this)
   .text()
   .trim();
+
+  var originalClass = $(this)
+  .attr("class");
+  
   var textInput = $("<textarea>")
-  .addClass("description col")
-  .val(text);
+  .addClass(originalClass)
+  .val(originalText);
+
   $(this).replaceWith(textInput);
   textInput.trigger("focus");
   // console.log(text);
@@ -140,17 +169,16 @@ $(document).ready(function(){
 
 var auditALlTasks = function() {
   $(".row").each(function(index, el) {
-    // console.log("el: " + el);
     auditTask(el);
   });
 }
 
-setInterval(function () {
-  auditALlTasks();
-},  (1000 * 60) * 1);
+
+
 
 // localStorage.removeItem(localStorageName);
 displayCurrentDate();
 loadTasks();
 auditALlTasks();
-
+minuteUpdate();
+taskAuditUpdate();

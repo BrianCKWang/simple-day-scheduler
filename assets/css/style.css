@@ -38,18 +38,20 @@ textarea{
   word-wrap: break-word;
   /* overflow: hidden; */
   max-height: 75px;
+  border-top: 1px solid rgb(0, 0, 0);
 }
 
 .time-block{
   text-align: center;
   /* border-radius: 15px; */
   border-right: 1px solid black;
+  border-top: 1px solid rgb(0, 0, 0);
 }
 
 .row {
   white-space: pre-wrap;
   height: 80px;
-  border-top: 1px solid rgb(0, 0, 0);;
+  
 }
 
 .hour {
@@ -90,16 +92,4 @@ textarea{
 .saveBtn i:hover {
   font-size: 20px;
   transition: all .3s ease-in-out;
-}
-
-.timeSegment {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  border-right: 1px solid black;
-}
-
-.save {
-  border: 1px solid black;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
 }
