@@ -67,7 +67,6 @@ var auditTask = function(taskEl) {
   // convert to moment object at 5:00pm, L for local time
   var currentHour = parseInt(moment().format("k"));
 
-
   $(taskEl).find(".description").removeClass("past present future");
 
   if(taskTimeNum < currentHour){
@@ -101,8 +100,8 @@ var displayCurrentDate = function() {
 // get the remaining millisecond and set a timeout to start the setInterval for more accurate timing
 var minuteUpdate = function() {
   var d = new Date();
-  var msDiff = d.getMilliseconds();
-  var secDiff = 60 - d.getSeconds();
+  var msDiff = 1000 - d.getMilliseconds();
+  var secDiff = 59 - d.getSeconds();
   var timeOut = secDiff * 1000 + msDiff;
   // console.log(secDiff + ":" + msDiff);
   
@@ -110,18 +109,19 @@ var minuteUpdate = function() {
     displayCurrentDate();
     setInterval(function () {
       displayCurrentDate();
-    },  (1000 * 60) * 1); // every 60 sec
+    },  (1000 * 60) * 1); // every 1 min
     }, timeOut);
 }
 
 var taskAuditUpdate = function() {
   var d = new Date();
-  var msDiff = d.getMilliseconds();
-  var secDiff = 60 - d.getSeconds();
-  var minDiff = 60 - d.getMinutes();
+  var msDiff = 1000 - d.getMilliseconds();
+  var secDiff = 59 - d.getSeconds();
+  var minDiff = 59 - d.getMinutes();
   var timeOut = minDiff * 60 * 1000 + secDiff * 1000 + msDiff;
-  // console.log(minDiff + ":" + secDiff + ":" + msDiff);
- 
+  console.log(minDiff + ":" + secDiff + ":" + msDiff);
+  console.log(timeOut);
+
   setTimeout(function(){
     auditALlTasks();
     setInterval(function () {
@@ -131,7 +131,6 @@ var taskAuditUpdate = function() {
 }
 
 $("#schedule").on("click", "p", function() {
-  // console.log("<p> was clicked");
   var originalText = $(this)
   .text()
   .trim();
@@ -181,9 +180,6 @@ var auditALlTasks = function() {
     auditTask(el);
   });
 }
-
-
-
 
 // localStorage.removeItem(localStorageName);
 displayCurrentDate();
