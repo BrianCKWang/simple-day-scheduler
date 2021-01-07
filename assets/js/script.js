@@ -105,20 +105,33 @@ var displayCurrentDate = function() {
 // get the remaining millisecond and set a timeout to start the setInterval for more accurate timing
 var minuteUpdate = function() {
   var d = new Date();
+  var msDiff = d.getUTCMilliseconds();
+  var secDiff = 60 - d.getSeconds();
+  var timeOut = secDiff * 1000 + msDiff;
+  // console.log(secDiff + ":" + msDiff);
+  
   setTimeout(function(){
+    displayCurrentDate();
     setInterval(function () {
       displayCurrentDate();
-    },  (1000 * 60) * 1);
-    }, d.getUTCMilliseconds());
+    },  (1000 * 60) * 1); // every 60 sec
+    }, timeOut);
 }
 
 var taskAuditUpdate = function() {
   var d = new Date();
+  var msDiff = d.getUTCMilliseconds();
+  var secDiff = 60 - d.getSeconds();
+  var minDiff = 60 - d.getMinutes();
+  var timeOut = minDiff * 60 * 1000 + secDiff * 1000 + msDiff;
+  // console.log(minDiff + ":" + secDiff + ":" + msDiff);
+ 
   setTimeout(function(){
+    auditALlTasks();
     setInterval(function () {
       auditALlTasks();
-    },  (1000 * 60) * 60);
-    }, d.getUTCMilliseconds());
+    },  (1000 * 60) * 60);  // every 60 min
+    }, timeOut);
 }
 
 $("#schedule").on("click", "p", function() {
