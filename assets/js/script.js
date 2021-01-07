@@ -67,12 +67,8 @@ var auditTask = function(taskEl) {
   // convert to moment object at 5:00pm, L for local time
   var currentHour = parseInt(moment().format("k"));
 
-  
-  /******************************************************************************************************/
-  currentHour-= 9;
-  /******************************************************************************************************/
 
-  $(taskEl).removeClass("past present future");
+  $(taskEl).find(".description").removeClass("past present future");
 
   if(taskTimeNum < currentHour){
     $(taskEl).find(".description").addClass("past");
@@ -105,7 +101,7 @@ var displayCurrentDate = function() {
 // get the remaining millisecond and set a timeout to start the setInterval for more accurate timing
 var minuteUpdate = function() {
   var d = new Date();
-  var msDiff = d.getUTCMilliseconds();
+  var msDiff = d.getMilliseconds();
   var secDiff = 60 - d.getSeconds();
   var timeOut = secDiff * 1000 + msDiff;
   // console.log(secDiff + ":" + msDiff);
@@ -120,7 +116,7 @@ var minuteUpdate = function() {
 
 var taskAuditUpdate = function() {
   var d = new Date();
-  var msDiff = d.getUTCMilliseconds();
+  var msDiff = d.getMilliseconds();
   var secDiff = 60 - d.getSeconds();
   var minDiff = 60 - d.getMinutes();
   var timeOut = minDiff * 60 * 1000 + secDiff * 1000 + msDiff;
